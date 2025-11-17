@@ -1,42 +1,45 @@
 <template>
   <div id="kontakt" class="kontakt-wrapper">
-    <!-- Dolna część - ciemno brązowa z wszystkimi danymi kontaktowymi -->
-    <div class="bottom-section">
+
+    <FallingLeaves :count="15" color="#8b6f47" />
+
+    <div class="contact-section">
       <div class="contact-container">
-        <!-- Lewa strona - Nasze lokalizacje -->
-        <div class="contact-group left-group">
-          <div class="locations-wrapper">
-            <div class="location-block">
-              <p class="location-name-dark">Gościniec pod Małym Królem</p>
-              <p class="location-detail">Strwiążyk 35A, 38-700 Ustrzyki Dolne</p>
+        
+        
+        <div class="info-item">
+          <p class="info-label">Email</p>
+          <a href="mailto:gpmk@wp.pl" class="info-value">gpmk@wp.pl</a>
+        </div>
+
+        
+        <div class="info-item locations-item">
+          <p class="info-label">Nasze lokalizacje</p>
+          <div class="locations">
+            <div class="location">
+              <p class="location-name">Gościniec pod Małym Królem</p>
+              <p class="location-address">Strwiążyk 35A, 38-700 Ustrzyki Dolne</p>
             </div>
-            <div class="location-block">
-              <p class="location-name-dark">Ogród Bieszczadzki</p>
-              <p class="location-detail">Moczary 39, 38-700 Ustrzyki Dolne</p>
+            <div class="location">
+              <p class="location-name">Ogród Bieszczadzki</p>
+              <p class="location-address">Moczary 39, 38-700 Ustrzyki Dolne</p>
             </div>
           </div>
         </div>
 
-        <!-- Środek - Email -->
-        <div class="contact-group center-group">
-          <p class="contact-label">DANE KONTAKTOWE</p>
-          <div class="contact-items">
-            <a href="mailto:gpmk@wp.pl" class="contact-item email-item">gpmk@wp.pl</a>
+        
+        <div class="info-item phones-item">
+          <p class="info-label">Zarezerwuj pobyt</p>
+          <div class="phone-numbers">
+            <a href="tel:+48693960519" class="phone-number">693 960 519</a>
+            <a href="tel:+48603131190" class="phone-number">603 131 190</a>
           </div>
         </div>
 
-        <!-- Prawa strona - Numery telefonu -->
-        <div class="contact-group right-group">
-          <p class="contact-label">ZAREZERWUJ POBYT</p>
-          <div class="contact-items">
-            <a href="tel:+48693960519" class="contact-item">693 960 519</a>
-            <a href="tel:+48603131190" class="contact-item">603 131 190</a>
-          </div>
-        </div>
       </div>
     </div>
 
-    <!-- Boczne okienko z Ogrodem Bieszczadzkim -->
+    
     <div class="garden-container">
       <a
         href="http://www.bieszczadzkiogrod.pl/"
@@ -64,141 +67,106 @@
   overflow: hidden;
 }
 
-/* Sekcja - ciemno brązowa z telefonami, emailem i lokalizacjami */
-.bottom-section {
-  background: linear-gradient(to bottom, #3D2817, #2A1810);
-  padding: 2rem 2rem;
+
+.contact-section {
+  background: linear-gradient(135deg, #3D2817, #2A1810);
+  padding: 1.5rem 2rem;
   width: 100%;
 }
 
 .contact-container {
   max-width: 1400px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 3rem;
-  align-items: start;
-}
-
-.contact-group {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2.5rem;
 }
 
-.left-group {
-  text-align: left;
+
+.info-item {
+  flex: 1;
 }
 
-.center-group {
-  text-align: center;
-}
-
-.right-group {
-  text-align: right;
-}
-
-.contact-label {
+.info-label {
   font-family: Georgia, serif;
   font-size: 0.75rem;
   color: #D4A574;
-  margin: 0 0 0.8rem 0;
-  letter-spacing: 0.1rem;
-  font-weight: 600;
+  margin: 0 0 0.5rem 0;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
 }
 
-.contact-items {
+.info-value {
+  font-family: Georgia, serif;
+  font-size: 0.85rem;
+  color: #E8D4B8;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  display: block;
+}
+
+.info-value:hover {
+  color: #F5E6D3;
+}
+
+
+.locations-item {
+  flex: 2;
+}
+
+.locations {
+  display: flex;
+  gap: 2rem;
+}
+
+.location {
+  flex: 1;
+}
+
+.location-name {
+  font-family: Georgia, serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #D4A574;
+  margin: 0 0 0.25rem 0;
+}
+
+.location-address {
+  font-size: 0.75rem;
+  color: #E8D4B8;
+  margin: 0;
+  line-height: 1.3;
+}
+
+
+.phones-item {
+  text-align: right;
+}
+
+.phone-numbers {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+  align-items: flex-end;
 }
 
-.contact-item {
+.phone-number {
   font-family: Georgia, serif;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #E8D4B8;
   text-decoration: none;
   transition: all 0.3s ease;
-  letter-spacing: 0.05rem;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
-.contact-item:hover {
+.phone-number:hover {
   color: #F5E6D3;
-  transform: translateX(5px);
-}
-
-.locations-wrapper {
-  display: flex;
-  gap: 2rem;
-  align-items: start;
-}
-
-.location-block {
-  flex: 1;
-}
-
-.location-name-dark {
-  font-family: Georgia, serif;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #E8D4B8;
-  margin: 0 0 0.2rem 0;
-  letter-spacing: 0.02rem;
-}
-
-.location-detail {
-  font-family: Georgia, serif;
-  font-size: 0.75rem;
-  color: #D4A574;
-  margin: 0.1rem 0;
-  line-height: 1.4;
-}
-
-.email-item {
-  font-size: 0.95rem;
-}
-
-@media (max-width: 768px) {
-  .bottom-section {
-    padding: 1.5rem 1rem;
-  }
-
-  .contact-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .left-group,
-  .center-group,
-  .right-group {
-    text-align: center;
-  }
-
-  .locations-wrapper {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .contact-label {
-    font-size: 0.7rem;
-  }
-
-  .contact-item {
-    font-size: 1.2rem;
-  }
-
-  .email-item {
-    font-size: 0.9rem;
-  }
-
-  .location-name-dark {
-    font-size: 0.8rem;
-  }
-
-  .location-detail {
-    font-size: 0.7rem;
-  }
+  transform: scale(1.03);
 }
 
 .garden-container {
@@ -229,14 +197,6 @@
   box-shadow: -3px 0 8px rgba(175, 76, 30, 0.15);
   border: 1px solid rgba(175, 76, 30, 0.2);
   letter-spacing: 0.3px;
-}
-
-@media (max-width: 768px) {
-  .garden-text {
-    right: 110px;
-    font-size: 0.8rem;
-    padding: 0.4rem 0.8rem;
-  }
 }
 
 .garden-logo {
@@ -301,7 +261,69 @@
   transform: scale(1.05);
 }
 
+
+@media (max-width: 1200px) {
+  .contact-container {
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .locations {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .phones-item {
+    flex: 0 0 100%;
+    text-align: center;
+  }
+
+  .phone-numbers {
+    align-items: center;
+  }
+
+  .phone-number {
+    font-size: 1rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .contact-section {
+    padding: 1.5rem 1rem;
+  }
+
+  .contact-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .info-item {
+    text-align: center;
+  }
+
+  .locations {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .phones-item {
+    text-align: center;
+  }
+
+  .phone-numbers {
+    align-items: center;
+  }
+
+  .phone-number {
+    font-size: 1rem;
+  }
+
+  .garden-text {
+    right: 110px;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+
   .garden-logo {
     right: -180px;
     width: 200px;

@@ -9,7 +9,7 @@
         <p>Luksusowy pokój dla dwóch osób z komfortowym łóżkiem king-size i prywatnym balkonem z widokiem na piękne Bieszczady. Idealny dla par szukających wyjątkowego miejsca na romantyczny wypoczynek. Pokój wyposażony we wszystkie niezbędne udogodnienia zapewniające komfortowy pobyt.</p>
       </div>
       <div class="image-gallery">
-        <img :src="images[selectedImage].src" :alt="images[selectedImage].alt" class="main-image" />
+        <img v-if="images[selectedImage]" :src="images[selectedImage]?.src" :alt="images[selectedImage]?.alt" class="main-image" />
         <div class="thumbnail-container">
           <img v-for="(image, index) in images" :key="index" :src="image.src" :alt="image.alt" class="thumbnail" :class="{ active: selectedImage === index }" @click="selectedImage = index" />
         </div>
@@ -30,6 +30,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
+
 const selectedImage = ref(0);
 const images = [
   { src: 'https://www.dropbox.com/scl/fi/6hzutp9l6lqjs0313x4rd/king-size2.webp?rlkey=0w4kntbz1ivyqc4bpcsotlg7g&st=55pevb27&dl=0&raw=1', alt: 'Pokój z łóżkiem king-size' },

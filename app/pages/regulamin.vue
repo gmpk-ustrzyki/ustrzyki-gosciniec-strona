@@ -62,6 +62,10 @@
   </div>
 </template>
 
+<script setup>
+// Empty script section for proper Nuxt component initialization
+</script>
+
 <style scoped>
 .regulamin-wrapper {
   background: linear-gradient(to bottom, rgba(139, 90, 43, 0.15), rgba(139, 90, 43, 0.05)),
