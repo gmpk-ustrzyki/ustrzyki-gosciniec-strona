@@ -50,8 +50,8 @@
           <div class="frame-decoration bottom-right"></div>
           
           <div class="image-wrapper">
-            <img 
-              src="https://www.dropbox.com/scl/fi/enrk7nxf5a9z33s7587oy/MirekiKasiabialyfon.png?rlkey=9fip7cpyt2457fg07xs3nqgb1&st=447nvnlk&dl=1" 
+            <img
+              src="/images/about/mirek-kasia.png"
               alt="Mirek i Kasia"
               class="about-us-image"
             />

@@ -29,17 +29,17 @@
       <div class="reviews-carousel">
         <button
           class="carousel-btn prev"
-          @click="scrollLeft"
-          :disabled="scrollPosition === 0"
+          @click="goToPrevPage"
+          :disabled="!hasPrevPage"
         >
           ‹
         </button>
 
-        <div class="reviews-track-container" ref="scrollContainer" @scroll="updateScrollPosition">
+        <div class="reviews-track-container">
           <div class="reviews-track">
             <div
-              v-for="(review, index) in reviews"
-              :key="index"
+              v-for="(review, index) in visibleReviews"
+              :key="`page-${currentPage}-review-${index}`"
               class="review-card"
             >
               <div class="review-header">
@@ -58,7 +58,22 @@
               </div>
 
               <div class="review-content">
-                <p class="review-text">{{ review.text }}</p>
+                <p class="review-text">
+                  <span v-if="!isTextLong(review.text)">{{ review.text }}</span>
+                  <span v-else>
+                    <span v-if="!isReviewExpanded(currentPage * REVIEWS_PER_PAGE + index)">
+                      {{ getTruncatedText(review.text) }}
+                    </span>
+                    <span v-else>{{ review.text }}</span>
+                  </span>
+                </p>
+                <button
+                  v-if="isTextLong(review.text)"
+                  class="read-more-btn"
+                  @click="toggleReviewExpansion(currentPage * REVIEWS_PER_PAGE + index)"
+                >
+                  {{ isReviewExpanded(currentPage * REVIEWS_PER_PAGE + index) ? 'Zobacz mniej' : 'Zobacz więcej' }}
+                </button>
                 <div class="review-highlights" v-if="review.highlights && review.highlights.length > 0">
                   <span v-for="(highlight, i) in review.highlights" :key="i" class="highlight-tag">
                     {{ highlight }}
@@ -71,8 +86,8 @@
 
         <button
           class="carousel-btn next"
-          @click="scrollRight"
-          :disabled="isAtEnd"
+          @click="goToNextPage"
+          :disabled="!hasNextPage"
         >
           ›
         </button>
@@ -93,8 +108,7 @@ interface Review {
   date: string;
 }
 
-const scrollContainer = ref<HTMLElement | null>(null);
-const scrollPosition = ref(0);
+const currentPage = ref(0);
 const overallRating = ref(9.6); // Twoja ocena z Booking.com
 const ratingText = ref('Wyjątkowy'); // Booking.com używa "Wyjątkowy" dla 9+
 
@@ -166,36 +180,59 @@ const reviews = ref<Review[]>([
   }
 ]);
 
-const isAtEnd = computed(() => {
-  if (!scrollContainer.value) return false;
-  const container = scrollContainer.value;
-  return Math.ceil(scrollPosition.value + container.clientWidth) >= container.scrollWidth - 10;
+const REVIEWS_PER_PAGE = 3;
+
+// Oblicz całkowitą liczbę stron
+const totalPages = computed(() => Math.ceil(reviews.value.length / REVIEWS_PER_PAGE));
+
+// Pobierz opinie dla aktualnej strony
+const visibleReviews = computed(() => {
+  const startIndex = currentPage.value * REVIEWS_PER_PAGE;
+  const endIndex = startIndex + REVIEWS_PER_PAGE;
+  return reviews.value.slice(startIndex, endIndex);
 });
 
-const updateScrollPosition = () => {
-  if (scrollContainer.value) {
-    scrollPosition.value = scrollContainer.value.scrollLeft;
+// Sprawdź czy jest poprzednia strona
+const hasPrevPage = computed(() => currentPage.value > 0);
+
+// Sprawdź czy jest następna strona
+const hasNextPage = computed(() => currentPage.value < totalPages.value - 1);
+
+const goToPrevPage = () => {
+  if (hasPrevPage.value) {
+    currentPage.value--;
   }
 };
 
-const scrollLeft = () => {
-  if (scrollContainer.value) {
-    const cardWidth = scrollContainer.value.clientWidth / 3; // szerokość jednej karty
-    scrollContainer.value.scrollBy({
-      left: -cardWidth,
-      behavior: 'smooth'
-    });
+const goToNextPage = () => {
+  if (hasNextPage.value) {
+    currentPage.value++;
   }
 };
 
-const scrollRight = () => {
-  if (scrollContainer.value) {
-    const cardWidth = scrollContainer.value.clientWidth / 3; // szerokość jednej karty
-    scrollContainer.value.scrollBy({
-      left: cardWidth,
-      behavior: 'smooth'
-    });
+// Flagi dla rozwinięcia tekstu dla każdej opinii
+const expandedReviews = ref<Set<number>>(new Set());
+
+const toggleReviewExpansion = (reviewIndex: number) => {
+  if (expandedReviews.value.has(reviewIndex)) {
+    expandedReviews.value.delete(reviewIndex);
+  } else {
+    expandedReviews.value.add(reviewIndex);
   }
+};
+
+const isReviewExpanded = (reviewIndex: number) => {
+  return expandedReviews.value.has(reviewIndex);
+};
+
+// Sprawdź czy tekst jest długi (powyżej 150 znaków)
+const isTextLong = (text: string) => {
+  return text.length > 150;
+};
+
+// Pobierz skrócony tekst
+const getTruncatedText = (text: string) => {
+  return text.substring(0, 150) + '...';
 };
 </script>
 
@@ -232,11 +269,11 @@ const scrollRight = () => {
   align-items: center;
   justify-content: center;
   gap: 2rem;
-  padding: 1.5rem;
+  padding: 2rem 2.5rem;
   background: white;
-  border-radius: 15px;
+  border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
+  max-width: 650px;
   margin: 0 auto;
   text-decoration: none;
   cursor: pointer;
@@ -250,51 +287,61 @@ const scrollRight = () => {
 }
 
 .booking-logo {
-  height: 30px;
+  height: 35px;
   width: auto;
+  flex-shrink: 0;
 }
 
 .rating-summary {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.2rem;
+  flex-shrink: 0;
 }
 
 .rating-score {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: bold;
-  color: #003580;
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #0071c2 0%, #003580 100%);
   color: white;
-  border-radius: 10px;
+  padding: 0.7rem 1.3rem;
+  background: linear-gradient(135deg, #0071c2 0%, #003580 100%);
+  border-radius: 12px;
+  flex-shrink: 0;
 }
 
 .rating-details {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  gap: 0.2rem;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .rating-text {
   font-weight: bold;
   color: #3D2817;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .review-count {
   color: #666;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  white-space: nowrap;
 }
 
 .see-all-reviews {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
+  gap: 0.7rem;
+  padding: 0.8rem 1.5rem;
   background: linear-gradient(135deg, #0071c2 0%, #003580 100%);
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .booking-badge:hover .see-all-reviews {
@@ -305,14 +352,15 @@ const scrollRight = () => {
 .see-all-text {
   color: white;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   white-space: nowrap;
 }
 
 .arrow-icon {
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
 .booking-badge:hover .arrow-icon {
@@ -353,16 +401,8 @@ const scrollRight = () => {
 }
 
 .reviews-track-container {
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: visible;
   flex: 1;
-  scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE */
-}
-
-.reviews-track-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
 }
 
 .reviews-track {
@@ -380,6 +420,11 @@ const scrollRight = () => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border: 1px solid #e7e7e7;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 300px;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .review-card:hover {
@@ -450,6 +495,10 @@ const scrollRight = () => {
 
 .review-content {
   margin: 0.75rem 0 0 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
 .review-text {
@@ -457,17 +506,32 @@ const scrollRight = () => {
   line-height: 1.5;
   color: #333;
   margin-bottom: 0.5rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  flex: 1;
+}
+
+.read-more-btn {
+  background: none;
+  border: none;
+  color: #0071c2;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.3rem 0;
+  text-align: left;
+  transition: color 0.2s ease;
+  text-decoration: underline;
+}
+
+.read-more-btn:hover {
+  color: #003580;
 }
 
 .review-highlights {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin-top: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
 }
 
 .highlight-tag {
@@ -525,20 +589,40 @@ const scrollRight = () => {
 
   .booking-badge {
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+    gap: 1.2rem;
+    padding: 1.5rem 1.2rem;
+    max-width: 95%;
+  }
+
+  .booking-logo {
+    height: 30px;
+  }
+
+  .rating-score {
+    font-size: 2.2rem;
+    padding: 0.6rem 1.1rem;
+  }
+
+  .rating-text {
+    font-size: 1.1rem;
+  }
+
+  .review-count {
+    font-size: 0.9rem;
   }
 
   .see-all-reviews {
-    padding: 0.5rem 1rem;
+    padding: 0.7rem 1.3rem;
+    width: 100%;
+    justify-content: center;
   }
 
   .see-all-text {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
   }
 
   .arrow-icon {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   .carousel-btn {
@@ -551,6 +635,8 @@ const scrollRight = () => {
     flex: 0 0 100%;
     max-width: 100%;
     padding: 1.25rem;
+    min-height: 350px;
+    max-height: 350px;
   }
 
   .reviews-track {
@@ -559,7 +645,6 @@ const scrollRight = () => {
 
   .review-text {
     font-size: 0.9rem;
-    -webkit-line-clamp: 6;
   }
 
   .reviewer-avatar {

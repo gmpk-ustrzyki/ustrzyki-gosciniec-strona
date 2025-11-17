@@ -2,7 +2,7 @@
   <div class="logo-container">
     <a href="#hero">
       <img
-        src="https://www.dropbox.com/scl/fi/so3zxde1gknujbw6gr369/logonew.png?rlkey=ifv1ytytf38u708q6i9o42x30&st=4ccwzhss&dl=1"
+        src="/images/logo/logo.png"
         alt="Logo"
         class="logo-image"
       />

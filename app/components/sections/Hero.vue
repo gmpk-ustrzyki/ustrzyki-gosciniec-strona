@@ -387,7 +387,7 @@ const slideStyle = (index: number) => {
   width: 55px;
   height: 100%;
   margin-right: -2px;
-  background-image: url('https://www.dropbox.com/scl/fi/s7030pif0g3to58rdlje8/krona.png?rlkey=spmf4p5tvjjewgcqbnp1dvprv&st=j34viumj&dl=0&raw=1');
+  background-image: url('/images/logo/krona.png');
   background-size: 140px;
   background-position: -42px 0;
   background-repeat: no-repeat;
