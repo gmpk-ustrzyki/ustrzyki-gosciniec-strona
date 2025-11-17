@@ -1,5 +1,7 @@
 <template>
   <div class="hero-wrapper">
+    <FallingLeaves :count="30" color="#D4A574" />
+
     <!-- Preload pierwszego obrazu z najwyższym priorytetem -->
     <NuxtImg
       preload
@@ -194,6 +196,10 @@ const slideStyle = (index: number) => {
   overflow: hidden;
   /* Placeholder dla pierwszego obrazu podczas ładowania */
   background-color: #1a1a1a;
+}
+
+.hero-wrapper :deep(.falling-leaves-container) {
+  z-index: 5;
 }
 
 .slide-container {

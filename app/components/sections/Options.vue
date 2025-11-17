@@ -293,8 +293,13 @@ const handleRoomClick = (room: Room) => {
   }
 };
 
+// Flaga czy powiadomienie zostało już zamknięte w tej sesji
+const wasNotificationClosed = ref(false);
+
 const closePriceNotification = () => {
   showPriceNotification.value = false;
+  // Ustaw flagę, że powiadomienie zostało zamknięte (tylko dla tej sesji)
+  wasNotificationClosed.value = true;
 };
 
 // Intersection Observer do pokazania powiadomienia po przewinięciu
@@ -302,7 +307,7 @@ onMounted(() => {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting && !showPriceNotification.value) {
+        if (entry.isIntersecting && !showPriceNotification.value && !wasNotificationClosed.value) {
           setTimeout(() => {
             showPriceNotification.value = true;
           }, 500);
@@ -429,16 +434,20 @@ onMounted(() => {
 
 /* Price notification */
 .price-notification {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   max-width: 800px;
-  margin: 2rem auto;
+  width: 90%;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 250, 245, 0.98));
   border-radius: 12px;
   border: 2px solid #D4A574;
   box-shadow: 0 6px 25px rgba(139, 90, 43, 0.2);
   padding: 1.5rem 3rem 1.5rem 2rem;
   animation: slideIn 0.5s ease-out;
-  z-index: 2;
+  z-index: 100;
+  pointer-events: auto;
 }
 
 .close-btn {
@@ -553,18 +562,18 @@ onMounted(() => {
 
 @keyframes slideIn {
   from {
-    transform: translateY(-30px);
+    transform: translate(-50%, -50%) scale(0.9);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
 }
 
 @media (max-width: 768px) {
   .price-notification {
-    margin: 1.5rem 1rem;
+    width: 95%;
     padding: 1.5rem 2.5rem 1.5rem 1.5rem;
   }
 
