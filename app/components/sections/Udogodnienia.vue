@@ -1,7 +1,6 @@
 <template>
   <section id="udogodnienia">
     <div class="udogodnienia-wrapper">
-      <FallingLeaves :count="25" color="#8b6f47" />
       <div class="udogodnienia-content">
         <div class="intro-section">
           <h2 class="section-heading animate-on-scroll">Nasza Okolica</h2>

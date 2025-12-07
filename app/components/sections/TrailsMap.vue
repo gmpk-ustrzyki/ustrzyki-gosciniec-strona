@@ -1,7 +1,6 @@
 <!-- components/sections/TrailsMap.vue -->
 <template>
   <section class="trails-section">
-    <FallingLeaves :count="30" color="#8B6F47" />
     <div class="trails-header">
       <h2>🥾 Najlepsze szlaki w okolicy</h2>
       <p>Odkryj piękno Bieszczadzkiego Parku Narodowego</p>
@@ -10,82 +9,44 @@
     <div class="trails-container">
       <!-- Lista szlaków -->
       <div class="trails-list">
-        <!-- Strzałka w lewo (mobile carousel) -->
-        <button
-          class="mobile-trail-arrow left"
-          @click="previousTrail"
-          :disabled="currentTrailIndex === 0"
-          aria-label="Poprzedni szlak"
+        <div 
+          v-for="(trail, index) in trails" 
+          :key="index"
+          class="trail-card"
+          @click="focusTrail(trail)"
+          @mouseenter="highlightTrail(trail)"
+          @mouseleave="unhighlightTrail"
+          :class="{ active: selectedTrail?.id === trail.id, highlighted: highlightedTrail?.id === trail.id }"
         >
-          ‹
-        </button>
-
-        <!-- Desktop: wszystkie karty, Mobile: tylko aktywna karta -->
-        <div class="trails-wrapper">
-          <div
-            v-for="(trail, index) in trails"
-            :key="index"
-            class="trail-card"
-            :class="{
-              active: selectedTrail?.id === trail.id,
-              highlighted: highlightedTrail?.id === trail.id,
-              'mobile-active': currentTrailIndex === index
-            }"
-            @click="focusTrail(trail)"
-            @mouseenter="highlightTrail(trail)"
-            @mouseleave="unhighlightTrail"
-          >
-            <div class="trail-number">#{{ index + 1 }}</div>
-            <div class="trail-info">
-              <h3>{{ trail.name }}</h3>
-              <div class="trail-meta">
-                <span class="rating">⭐ {{ trail.rating }}</span>
-                <span class="difficulty">{{ trail.difficulty }}</span>
-                <span class="distance">{{ trail.distance }} km</span>
-                <span class="time">{{ trail.time }}</span>
-              </div>
-              <p class="trail-description">{{ trail.description }}</p>
+          <div class="trail-number">#{{ index + 1 }}</div>
+          <div class="trail-info">
+            <h3>{{ trail.name }}</h3>
+            <div class="trail-meta">
+              <span class="rating">⭐ {{ trail.rating }}</span>
+              <span class="difficulty">{{ trail.difficulty }}</span>
+              <span class="distance">{{ trail.distance }} km</span>
+              <span class="time">{{ trail.time }}</span>
             </div>
+            <p class="trail-description">{{ trail.description }}</p>
           </div>
-        </div>
-
-        <!-- Strzałka w prawo (mobile carousel) -->
-        <button
-          class="mobile-trail-arrow right"
-          @click="nextTrail"
-          :disabled="currentTrailIndex === trails.length - 1"
-          aria-label="Następny szlak"
-        >
-          ›
-        </button>
-
-        <!-- Wskaźniki (mobile) -->
-        <div class="mobile-trail-indicators">
-          <span
-            v-for="(_, index) in trails"
-            :key="`indicator-${index}`"
-            class="trail-indicator"
-            :class="{ active: currentTrailIndex === index }"
-            @click="goToTrail(index)"
-          ></span>
         </div>
       </div>
 
       <!-- Mapa -->
       <div class="map-container">
         <div id="map" ref="mapContainer"></div>
-        <!-- Overlay dla mobile - blokuje interakcję z mapą -->
+
+        <!-- Overlay z przyciskiem aktywacji (tylko mobile) -->
         <div
-          v-if="showMapOverlay"
-          class="map-overlay"
-          @click="activateMap"
+          v-if="isMobile && !isMapActivated"
+          class="map-activation-overlay"
         >
-          <div class="map-overlay-content">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="touch-icon">
-              <path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/>
-            </svg>
-            <p class="map-overlay-text">Dotknij aby aktywować mapę</p>
-          </div>
+          <button
+            class="activate-map-btn"
+            @click="activateMap"
+          >
+            📍 Aktywuj mapę
+          </button>
         </div>
       </div>
     </div>
@@ -101,41 +62,8 @@ let markers = []
 let trailLines = []
 const selectedTrail = ref(null)
 const highlightedTrail = ref(null)
-const showMapOverlay = ref(false)
-const currentTrailIndex = ref(0)
-
-// Sprawdź czy to urządzenie mobilne
-const checkMobile = () => {
-  if (typeof window !== 'undefined') {
-    return window.innerWidth <= 768
-  }
-  return false
-}
-
-// Aktywuj mapę (usuń overlay)
-const activateMap = () => {
-  showMapOverlay.value = false
-}
-
-// Funkcje nawigacji karuzelki (mobile)
-const nextTrail = () => {
-  if (currentTrailIndex.value < trails.value.length - 1) {
-    currentTrailIndex.value++
-    focusTrail(trails.value[currentTrailIndex.value])
-  }
-}
-
-const previousTrail = () => {
-  if (currentTrailIndex.value > 0) {
-    currentTrailIndex.value--
-    focusTrail(trails.value[currentTrailIndex.value])
-  }
-}
-
-const goToTrail = (index) => {
-  currentTrailIndex.value = index
-  focusTrail(trails.value[index])
-}
+const isMapActivated = ref(false)
+const isMobile = ref(false)
 
 // Dane szlaków w Bieszczadach
 const trails = ref([
@@ -309,7 +237,7 @@ const focusTrail = (trail) => {
   selectedTrail.value = trail
   if (map) {
     map.setView([trail.lat, trail.lng], 13)
-    
+
     // Pokaż popup dla wybranego szlaku
     markers.forEach(marker => {
       if (marker.trail.id === trail.id) {
@@ -319,14 +247,23 @@ const focusTrail = (trail) => {
   }
 }
 
+const activateMap = () => {
+  isMapActivated.value = true
+}
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth <= 1024
+}
+
 onMounted(async () => {
-  // Sprawdź czy to mobile i pokaż overlay
-  if (checkMobile()) {
-    showMapOverlay.value = true
+  // Sprawdź czy urządzenie mobilne
+  if (process.client) {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
   }
 
   // Dynamiczny import Leaflet (tylko po stronie klienta)
-  if (typeof window !== 'undefined') {
+  if (process.client) {
     try {
       const L = await import('leaflet')
       
@@ -410,55 +347,69 @@ onUnmounted(() => {
     map.remove()
     map = null
   }
+  if (process.client) {
+    window.removeEventListener('resize', checkMobile)
+  }
 })
 </script>
 
 <style scoped>
 .trails-section {
   width: 100%;
-  padding: 4rem 2rem;
-  background-color: #f5f1e8;
+  padding: 8rem 2rem;
+  background: linear-gradient(180deg, #fafafa 0%, #ffffff 50%, #fafafa 100%);
   position: relative;
   overflow: hidden;
+  font-family: 'Poppins', system-ui, sans-serif;
 }
 
 .trails-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 5rem;
   padding: 0 2rem;
   position: relative;
   z-index: 2;
 }
 
 .trails-header h2 {
-  font-size: 2.5rem;
-  color: #8B6F47;
-  margin-bottom: 0.5rem;
-  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  font-size: 4rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
 .trails-header p {
+  font-family: 'Poppins', sans-serif;
   font-size: 1.2rem;
-  color: #666;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  color: #7c704c;
+  opacity: 0.85;
 }
 
 .trails-container {
   display: grid;
   grid-template-columns: 500px 1fr;
-  background: white;
-  box-shadow: 0 4px 20px rgba(139, 111, 71, 0.15);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(124, 112, 76, 0.15);
+  border-radius: 20px;
   max-width: 1400px;
   margin: 0 auto;
   height: 800px;
   position: relative;
   z-index: 2;
+  overflow: hidden;
 }
 
 /* Lista szlaków */
 .trails-list {
   padding: 2rem;
   overflow-y: auto;
-  border-right: 2px solid #e5e5e5;
+  border-right: 1px solid rgba(124, 112, 76, 0.15);
 }
 
 .trail-card {
@@ -466,29 +417,32 @@ onUnmounted(() => {
   gap: 1rem;
   padding: 1.5rem;
   margin-bottom: 1rem;
-  background: #f9f7f4;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid rgba(124, 112, 76, 0.1);
 }
 
 .trail-card:hover,
 .trail-card.highlighted {
-  background: #f0ebe3;
+  background: rgba(255, 255, 255, 0.8);
   transform: translateX(5px);
-  box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border-color: rgba(124, 112, 76, 0.3);
 }
 
 .trail-card.active {
-  border-color: #8B6F47;
-  background: #fff;
+  border-color: #7c704c;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 20px rgba(124, 112, 76, 0.15);
 }
 
 .trail-number {
+  font-family: 'Poppins', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #8B6F47;
+  color: #7c704c;
   min-width: 40px;
   transition: transform 0.3s ease;
 }
@@ -498,10 +452,12 @@ onUnmounted(() => {
 }
 
 .trail-info h3 {
-  font-size: 1.2rem;
-  color: #333;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.15rem;
+  color: #2c3e50;
   margin-bottom: 0.5rem;
   font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .trail-meta {
@@ -513,10 +469,13 @@ onUnmounted(() => {
 }
 
 .trail-meta span {
-  padding: 0.2rem 0.6rem;
-  background: white;
-  border-radius: 4px;
+  font-family: 'Poppins', sans-serif;
+  padding: 0.3rem 0.8rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 6px;
   white-space: nowrap;
+  font-weight: 500;
+  border: 1px solid rgba(124, 112, 76, 0.1);
 }
 
 .rating {
@@ -525,17 +484,19 @@ onUnmounted(() => {
 }
 
 .difficulty {
-  color: #8B6F47;
+  color: #7c704c;
 }
 
 .distance, .time {
-  color: #666;
+  color: #555;
 }
 
 .trail-description {
+  font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
-  color: #666;
-  line-height: 1.5;
+  color: #555;
+  line-height: 1.7;
+  font-weight: 400;
 }
 
 /* Mapa */
@@ -550,90 +511,69 @@ onUnmounted(() => {
   height: 100%;
 }
 
-/* Map Overlay - blokuje interakcję na mobile */
-.map-overlay {
+/* Overlay aktywacji mapy (mobile) */
+.map-activation-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(139, 111, 71, 0.85);
-  backdrop-filter: blur(3px);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   z-index: 1000;
-  transition: opacity 0.3s ease;
+  transition: all 0.4s ease;
 }
 
-.map-overlay:hover {
-  background: rgba(139, 111, 71, 0.9);
-}
-
-.map-overlay-content {
-  text-align: center;
-  color: white;
-  padding: 2rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.touch-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 1rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.9;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-}
-
-.map-overlay-text {
-  font-family: Georgia, serif;
-  font-size: 1.1rem;
+.activate-map-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
   font-weight: 600;
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   letter-spacing: 0.5px;
+  color: #ffffff;
+  background: rgba(124, 112, 76, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 1.2rem 2.5rem;
+  box-shadow: 0 8px 24px rgba(124, 112, 76, 0.4);
+  text-transform: uppercase;
 }
 
-/* Mobile carousel elements - ukryte na desktop */
-.mobile-trail-arrow {
-  display: none;
+.activate-map-btn:hover {
+  background: rgba(124, 112, 76, 1);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(124, 112, 76, 0.5);
 }
 
-.mobile-trail-indicators {
-  display: none;
-}
-
-.trails-wrapper {
-  width: 100%;
+.activate-map-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 16px rgba(124, 112, 76, 0.4);
 }
 
 /* Scrollbar */
 .trails-list::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .trails-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
+  background: rgba(124, 112, 76, 0.1);
+  border-radius: 3px;
 }
 
 .trails-list::-webkit-scrollbar-thumb {
-  background: #8B6F47;
-  border-radius: 4px;
+  background: rgba(124, 112, 76, 0.4);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.trails-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 112, 76, 0.6);
 }
 
 /* Responsywność */
@@ -645,7 +585,7 @@ onUnmounted(() => {
 
   .trails-list {
     border-right: none;
-    border-bottom: 2px solid #e5e5e5;
+    border-bottom: 1px solid rgba(124, 112, 76, 0.15);
     max-height: 600px;
   }
 
@@ -656,115 +596,31 @@ onUnmounted(() => {
 
 @media (max-width: 768px) {
   .trails-section {
-    padding: 2rem 0;
+    padding: 6rem 1rem;
+  }
+
+  .trails-header {
+    margin-bottom: 3rem;
   }
 
   .trails-header h2 {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
 
-  /* Mobile carousel styling */
-  .trails-list {
-    position: relative;
-    padding: 1rem;
-    overflow: visible;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .trails-wrapper {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
+  .trails-header p {
+    font-size: 1rem;
   }
 
   .trail-card {
-    padding: 1.5rem;
-    margin-bottom: 0;
-    display: none; /* Ukryj wszystkie karty */
-  }
-
-  .trail-card.mobile-active {
-    display: flex; /* Pokaż tylko aktywną kartę */
-    animation: slideIn 0.3s ease;
-  }
-
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateX(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    padding: 1.2rem;
   }
 
   .trail-info h3 {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
   }
 
-  /* Strzałki mobile carousel */
-  .mobile-trail-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background: #8B6F47;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .mobile-trail-arrow:hover:not(:disabled) {
-    background: #6D4423;
-    transform: translateY(-50%) scale(1.1);
-  }
-
-  .mobile-trail-arrow:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  .mobile-trail-arrow.left {
-    left: -5px;
-  }
-
-  .mobile-trail-arrow.right {
-    right: -5px;
-  }
-
-  /* Wskaźniki mobile */
-  .mobile-trail-indicators {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 1rem;
-  }
-
-  .trail-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #d9d9d9;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .trail-indicator.active {
-    background: #8B6F47;
-    width: 24px;
-    border-radius: 4px;
+  .trail-description {
+    font-size: 0.9rem;
   }
 
   .map-container {
@@ -805,20 +661,26 @@ onUnmounted(() => {
 }
 
 .leaflet-popup-content-wrapper {
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  font-family: 'Poppins', sans-serif;
 }
 
 .popup-content h3 {
-  color: #8B6F47;
+  font-family: 'Poppins', sans-serif;
+  color: #7c704c;
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .popup-content p {
+  font-family: 'Poppins', sans-serif;
   margin: 0.3rem 0;
-  color: #666;
+  color: #555;
   font-size: 0.9rem;
+  font-weight: 400;
 }
 
 .leaflet-interactive {

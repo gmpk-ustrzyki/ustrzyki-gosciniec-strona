@@ -1,27 +1,34 @@
 <template>
   <div class="pokoje-wrapper">
     <div class="pokoje-content">
+      <!-- Przycisk powrotu – taki jak na Twoim screenie -->
       <NuxtLink to="/">
-        <button class="back-button">← Powrót na stronę główną</button>
+        <button class="back-button">
+          Powrót na stronę główną
+        </button>
       </NuxtLink>
 
+      <!-- Tytuł -->
       <h1 class="pokoje-title">
         {{ guestFilter && parseInt(guestFilter) >= 2 ? 'Pokoje i Dom w Gościńcu' : 'Pokoje w Gościńcu' }}
       </h1>
 
-      <p v-if="guestFilter" class="pokoje-description">
+      <!-- Podtytuł gdy jest filtrujemy po liczbie osób -->
+      <p v-if="guestFilter" class="pokoje-subtitle">
         Wyświetlane opcje dla {{ guestFilter }} {{ parseInt(guestFilter) === 1 ? 'osoby' : 'osób' }} i więcej
         ({{ filteredRooms.length }} {{ filteredRooms.length === 1 ? 'opcja' : 'opcji' }})
       </p>
 
+      <!-- Opis -->
       <p class="pokoje-description">
         {{
           guestFilter && parseInt(guestFilter) >= 2
-            ? 'Zapraszamy do komfortowych pokoi w naszym gościńcu oraz całego domu łemkowskiego. Każde zakwaterowanie zostało urządzone z myślą o Państwa wygodzie i relaksie podczas pobytu w Bieszczadach.'
-            : 'Zapraszamy do komfortowych pokoi w naszym gościńcu. Każdy pokój został urządzony z myślą o Państwa wygodzie i relaksie podczas pobytu w Bieszczadach.'
+            ? 'Zapraszamy do komfortowych pokoi w naszym gościńcu oraz całego domu łemkowskiego na wyłączność.'
+            : 'Zapraszamy do przytulnych i elegancko urządzonych pokoi z widokiem na Bieszczady.'
         }}
       </p>
 
+      <!-- Siatka pokoi -->
       <div class="room-grid">
         <div
           v-for="(room, index) in filteredRooms"
@@ -29,13 +36,13 @@
           class="room-card clickable"
           @click="handleRoomClick(room.name)"
         >
-          <img :src="room.image" :alt="room.name" class="room-image" />
+          <img :src="room.image" :alt="room.name" class="room-image" loading="lazy" />
           <div class="room-info">
             <h3 class="room-name">{{ room.name }}</h3>
             <div class="room-features">
-              <div v-for="(feature, idx) in room.features" :key="idx" class="feature">
+              <span v-for="(feature, idx) in room.features" :key="idx" class="feature">
                 {{ feature }}
-              </div>
+              </span>
             </div>
           </div>
         </div>
@@ -45,241 +52,212 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const router = useRouter()
 
-const guestFilter = computed(() => route.query.guests as string | undefined);
+const guestFilter = computed(() => route.query.guests as string | undefined)
 
+// Wszystkie pokoje – zdjęcia naprawione (działają!)
 const rooms = [
   {
     name: "Pokój z łóżkiem typu king-size i balkonem",
-    image: "https://www.dropbox.com/scl/fi/e4hte9ciiziiqzftd93j3/king-size1.webp?rlkey=uegtcgjaz743uhjwofj7su3k4&st=rmurtbzw&dl=0&raw=1",
+    image: "https://www.dropbox.com/scl/fi/e4hte9ciiziiqzftd93j3/king-size1.webp?rlkey=uegtcgjaz743uhjwofj7su3k4&raw=1",
     features: ["2 osoby"],
     capacity: 2
   },
   {
     name: "Pokój Dwuosobowy typu Deluxe",
-    image: "https://www.dropbox.com/scl/fi/rv4tj8e881nkxiodmu5ou/pokoj2x2.webp?rlkey=z077lvjzpkzbyyglhowbewsbz&st=fmnqly87&dl=0&raw=1",
+    image: "https://www.dropbox.com/scl/fi/rv4tj8e881nkxiodmu5ou/pokoj2x2.webp?rlkey=z077lvjzpkzbyyglhowbewsbz&raw=1",
     features: ["2 osoby"],
     capacity: 2
   },
   {
     name: "Dwupoziomowy pokój czteroosobowy",
-    image: "https://www.dropbox.com/scl/fi/sfyhsopbyfo5v5rxp8grg/dwupoziomowy1.webp?rlkey=x0lv8ooun9qgvgh2tnuznn3dt&e=1&st=ah9n8264&dl=0&raw=1",
+    image: "https://www.dropbox.com/scl/fi/sfyhsopbyfo5v5rxp8grg/dwupoziomowy1.webp?rlkey=x0lv8ooun9qgvgh2tnuznn3dt&raw=1",
     features: ["4 osoby"],
     capacity: 4
   },
   {
     name: "Apartament typu Suite z balkonem",
-    image: "https://www.dropbox.com/scl/fi/skvhk6mmia2bcrq96covi/apartament2.webp?rlkey=joe9ycr28ra3lt8nn24hktadu&st=1vcdo2g2&dl=0&raw=1",
-    features: ["7 osoby"],
+    image: "https://www.dropbox.com/scl/fi/skvhk6mmia2bcrq96covi/apartament2.webp?rlkey=joe9ycr28ra3lt8nn24hktadu&raw=1",
+    features: ["7 osób"],
     capacity: 7
   },
   {
     name: "Pokój Czteroosobowy",
-    image: "https://www.dropbox.com/scl/fi/pxkuo43lm6ivs9tyeswoy/4pokoje4.webp?rlkey=c8oozv5vr1ycrr6t9xzymszou&st=hkqfea89&dl=0&raw=1",
+    image: "https://www.dropbox.com/scl/fi/pxkuo43lm6ivs9tyeswoy/4pokoje4.webp?rlkey=c8oozv5vr1ycrr6t9xzymszou&raw=1",
     features: ["4 osoby"],
     capacity: 4
   },
   {
     name: "Pokój trzyosobowy",
-    image: "https://www.dropbox.com/scl/fi/k34c4ttrowbvm6vnf6c0w/3osoby1.webp?rlkey=v1zsjqkdtey2qy2hahnysufkd&st=3s5a4fkg&dl=0&raw=1",
+    image: "https://www.dropbox.com/scl/fi/k34c4ttrowbvm6vnf6c0w/3osoby1.webp?rlkey=v1zsjqkdtey2qy2hahnysufkd&raw=1",
     features: ["3 osoby"],
     capacity: 3
   },
   {
     name: "Apartament z 2 sypialniami",
-    image: "https://www.dropbox.com/scl/fi/4nwrqf6zkynjqzoi3nvh1/ostatni1.webp?rlkey=eu4e60nzcmo2mkey8y1qu0hbe&st=6hu4wxtw&dl=0&raw=1",
-    features: ["6 osoby"],
+    image: "https://www.dropbox.com/scl/fi/4nwrqf6zkynjqzoi3nvh1/ostatni1.webp?rlkey=eu4e60nzcmo2mkey8y1qu0hbe&raw=1",
+    features: ["6 osób"],
     capacity: 6
   }
-];
+]
 
 const domek = {
   name: "Dom łemkowski",
-  image: "https://www.dropbox.com/scl/fi/afd6esapqluindrfe2dd6/domek1.webp?rlkey=unewhp9t5o2j4z83fgiwmsk55&st=5ub74o8e&dl=0&raw=1",
+  image: "https://www.dropbox.com/scl/fi/afd6esapqluindrfe2dd6/domek1.webp?rlkey=unewhp9t5o2j4z83fgiwmsk55&raw=1",
   features: ["10 osób", "3 sypialnie", "Cały dom"],
   capacity: 10
-};
+}
 
 const filteredRooms = computed(() => {
-  if (!guestFilter.value) return rooms;
-
-  const guestCount = parseInt(guestFilter.value);
-  const filteredRoomsList = rooms.filter(room => room.capacity >= guestCount);
-
-  // Add domek option for 2+ guests
-  if (guestCount >= 2) {
-    filteredRoomsList.unshift(domek);
-  }
-
-  return filteredRoomsList;
-});
+  if (!guestFilter.value) return rooms
+  const guestCount = parseInt(guestFilter.value)
+  const list = rooms.filter(r => r.capacity >= guestCount)
+  if (guestCount >= 2) list.unshift(domek)
+  return list
+})
 
 const handleRoomClick = (roomName: string) => {
-  if (roomName === "Pokój z łóżkiem typu king-size i balkonem") {
-    router.push('/pokoje-details');
+  const routes: Record<string, string> = {
+    "Pokój z łóżkiem typu king-size i balkonem": '/pokoje-details',
+    "Pokój Dwuosobowy typu Deluxe": '/pokoje-deluxe',
+    "Dwupoziomowy pokój czteroosobowy": '/pokoje-poziom',
+    "Apartament typu Suite z balkonem": '/pokoje-suite',
+    "Pokój Czteroosobowy": '/pokoje-cztery',
+    "Pokój trzyosobowy": '/pokoje-trzy',
+    "Apartament z 2 sypialniami": '/pokoje-apartament',
+    "Dom łemkowski": '/domek'
   }
-  if (roomName === "Pokój Dwuosobowy typu Deluxe") {
-    router.push('/pokoje-deluxe');
-  }
-  if (roomName === "Dwupoziomowy pokój czteroosobowy") {
-    router.push('/pokoje-poziom');
-  }
-  if (roomName === "Apartament typu Suite z balkonem") {
-    router.push('/pokoje-suite');
-  }
-  if (roomName === "Pokój Czteroosobowy") {
-    router.push('/pokoje-cztery');
-  }
-  if (roomName === "Pokój trzyosobowy") {
-    router.push('/pokoje-trzy');
-  }
-  if (roomName === "Apartament z 2 sypialniami") {
-    router.push('/pokoje-apartament');
-  }
-  if (roomName === "Dom łemkowski") {
-    router.push('/domek');
-  }
-};
+  router.push(routes[roomName] ?? '/')
+}
 </script>
 
 <style scoped>
 .pokoje-wrapper {
-  background: linear-gradient(135deg, rgba(26, 27, 26, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%),
-    url('https://www.dropbox.com/scl/fi/ghymow5b5eu6ilt5zh7ac/udogodnienia_bg.webp?rlkey=8zjg81t5iehlkmocf6wsca94p&st=dpk8ngjh&dl=0&raw=1');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background: #ffffff;
   min-height: 100vh;
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
+  padding: 5rem 1rem 8rem;
 }
 
 .pokoje-content {
-  max-width: 1200px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 3rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Przycisk powrotu – dokładnie jak na Twoim screenie */
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: #7c704c;
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 4rem;
+  box-shadow: 0 10px 25px rgba(124, 112, 76, 0.3);
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: #665d3a;
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(124, 112, 76, 0.4);
 }
 
 .pokoje-title {
-  font-family: Georgia, serif;
-  font-size: 3rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 4.8rem;
+  font-weight: 700;
   color: #2c3e50;
-  text-align: center;
-  margin-bottom: 2rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 0 2rem;
+  line-height: 1.2;
 }
 
-@media (max-width: 768px) {
-  .pokoje-title {
-    font-size: 2rem;
-  }
+@media (max-width: 968px) { .pokoje-title { font-size: 3.8rem; } }
+@media (max-width: 640px) { .pokoje-title { font-size: 2.9rem; } }
+
+.pokoje-subtitle {
+  font-size: 1.4rem;
+  color: #7c704c;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
 }
 
 .pokoje-description {
-  font-size: 1.2rem;
-  line-height: 1.6;
+  font-size: 1.3rem;
   color: #555;
-  text-align: center;
-  margin-bottom: 3rem;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 900px;
+  margin: 0 auto 5rem;
+  line-height: 1.8;
 }
 
 .room-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 3rem;
+  margin-top: 3rem;
 }
 
 .room-card {
   background: white;
-  border-radius: 15px;
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.room-card.clickable {
-  cursor: pointer;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+  transition: all 0.4s ease;
+  border: 1px solid #f5f5f5;
 }
 
 .room-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-15px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.18);
 }
 
-.room-card.clickable:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-}
-
-.room-card.clickable:active {
-  transform: translateY(-3px);
-}
+.room-card.clickable { cursor: pointer; }
 
 .room-image {
   width: 100%;
-  height: 250px;
+  height: 300px;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.room-card:hover .room-image {
+  transform: scale(1.06);
 }
 
 .room-info {
-  padding: 1.5rem;
+  padding: 2rem;
 }
 
 .room-name {
-  font-family: Georgia, serif;
-  font-size: 1.5rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.8rem;
   color: #2c3e50;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 
 .room-features {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.8rem;
 }
 
 .feature {
-  background: rgba(124, 112, 76, 0.1);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  color: #2c3e50;
-}
-
-.back-button {
-  background: #7c704c;
-  color: white;
-  border: none;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
+  background: #f8f5f0;
+  color: #7c704c;
+  padding: 0.6rem 1.4rem;
+  border-radius: 50px;
   font-size: 1rem;
-  cursor: pointer;
-  margin-bottom: 2rem;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.back-button:hover {
-  background: #5d5436;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-weight: 600;
 }
 </style>

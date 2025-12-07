@@ -1,6 +1,5 @@
 <template>
   <section class="map-section">
-    <FallingLeaves :count="12" color="#b8956a" />
     <div class="container">
       <div class="content-wrapper">
         

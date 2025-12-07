@@ -1,7 +1,5 @@
 <template>
   <div class="hero-wrapper">
-    <FallingLeaves :count="30" color="#D4A574" />
-
     <!-- Preload pierwszego obrazu z najwyższym priorytetem -->
     <NuxtImg
       preload
@@ -37,36 +35,18 @@
         :style="slideStyle(index)"
       />
     </div>
+
     <div class="shadow-overlay">
-      <h1 class="hero-title animate-title">
-        Gościniec pod Małym <span class="crown">K</span>rólem
-      </h1>
-      <div class="hero-action-wrapper">
-        <button class="hero-action">
-          <a href="#pokoje">
-            <NuxtImg
-              src="/images/lupa.png"
-              alt="Lupa"
-              width="20"
-              height="20"
-            />
-            Zobacz
-          </a>
-        </button>
-        <button class="hero-action">
-          <a href="tel:693960519">
-            <img
-              src="/images/halo.png"
-              alt="Halo"
-              width="20"
-              height="20"
-            />
-            Zadzwoń
-          </a>
-          <div class="phone-tooltip">693 960 519</div>
-        </button>
+      <div class="hero-content">
+        <p class="hero-subtitle animate-subtitle">Odpoczynek w Bieszczadach</p>
+        <h1 class="hero-title animate-title">
+          Gościniec pod Małym Królem
+        </h1>
+        <a href="#options" class="hero-cta-button animate-button">
+          Sprawdź naszą ofertę
+        </a>
       </div>
-      
+
       <!-- Indicators -->
       <div class="slide-indicators">
         <button
@@ -78,6 +58,25 @@
           :aria-label="`Przejdź do zdjęcia ${index + 1}`"
         />
       </div>
+    </div>
+
+    <!-- Garden Logo -->
+    <div class="garden-container">
+      <a
+        href="http://www.bieszczadzkiogrod.pl/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="garden-logo"
+      >
+        <div class="garden-text">Ogród Bieszczadzki</div>
+        <div>
+          <p>Odwiedź nasz Ogród Bieszczadzki</p>
+          <img
+            src="https://www.dropbox.com/scl/fi/a6hqpzo79g0uqf8h9qaa8/ogrod.webp?rlkey=yvx6x7jfl7cyx0anl6d53z6m1&st=67vmufqd&dl=0&dl=0&raw=1"
+            alt="Bieszczadzki Ogród"
+          />
+        </div>
+      </a>
     </div>
   </div>
 </template>
@@ -198,10 +197,6 @@ const slideStyle = (index: number) => {
   background-color: #1a1a1a;
 }
 
-.hero-wrapper :deep(.falling-leaves-container) {
-  z-index: 5;
-}
-
 .slide-container {
   height: 100%;
   width: 100%;
@@ -319,17 +314,17 @@ const slideStyle = (index: number) => {
   width: 100%;
   height: 100%;
   background: linear-gradient(
-    180deg, 
-    rgba(0, 0, 0, 0.7) 0%, 
-    rgba(0, 0, 0, 0.3) 30%,
-    rgba(0, 0, 0, 0.1) 50%,
-    rgba(0, 0, 0, 0.3) 80%,
+    180deg,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0.4) 30%,
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(0, 0, 0, 0.4) 80%,
     rgba(0, 0, 0, 0.6) 100%
   );
   z-index: 10;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   pointer-events: none;
 }
@@ -338,26 +333,59 @@ const slideStyle = (index: number) => {
   pointer-events: auto;
 }
 
-.hero-title {
-  margin-top: 110px;
-  font-family: Georgia, serif;
-  font-size: 4rem;
-  color: #F4F0D4;
-  text-shadow: 
-    3px 3px 6px #af4c1e, 
-    4px 4px 8px #000000,
-    0 0 40px rgba(175, 76, 30, 0.5);
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
   text-align: center;
-  z-index: 2;
+  padding: 0 2rem;
+}
+
+.hero-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+  opacity: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.hero-subtitle.animate-subtitle {
+  animation: subtitleFadeIn 1.2s ease-out 0.3s forwards;
+}
+
+.hero-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 4rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  margin: 0;
   white-space: nowrap;
   overflow: visible;
-  height: 120px;
-  line-height: 140px;
   opacity: 0;
+  letter-spacing: 1px;
 }
 
 .hero-title.animate-title {
-  animation: titleFadeIn 1.5s ease-out 0.5s forwards;
+  animation: titleFadeIn 1.5s ease-out 0.6s forwards;
+}
+
+@keyframes subtitleFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 0.95;
+    transform: translateY(0);
+  }
 }
 
 @keyframes titleFadeIn {
@@ -372,154 +400,66 @@ const slideStyle = (index: number) => {
 }
 
 @media (max-width: 600px) {
+  .hero-subtitle {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+  }
+
   .hero-title {
-    margin-top: 60px;
     font-size: 2rem;
-    line-height: normal;
-    height: auto;
     white-space: normal;
     padding: 0 20px;
-    text-shadow: 2px 2px 4px #af4c1e, 3px 3px 6px #000000;
   }
 }
 
-.crown {
-  width: 55px;
-  height: 100%;
-  margin-right: -2px;
-  background-image: url('/images/logo/krona.png');
-  background-size: 140px;
-  background-position: -42px 0;
-  background-repeat: no-repeat;
+/* CTA Button */
+.hero-cta-button {
   display: inline-block;
-}
-
-@media (max-width: 600px) {
-  .crown {
-    background: none;
-    width: 35px;
-    height: auto;
-  }
-}
-
-.hero-action-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 70px;
-  position: absolute;
-  bottom: 100px;
-  left: 0;
-  width: 100%;
-  z-index: 2;
-}
-
-@media (max-width: 600px) {
-  .hero-action-wrapper {
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    bottom: 80px;
-  }
-}
-
-.hero-action {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(244, 240, 212, 0.9);
-  border: 2px solid rgba(212, 165, 116, 0.5);
-  border-radius: 12px;
-  padding: 0 36px;
-  height: 56px;
-  font-family: Georgia, serif;
-  font-size: 2rem;
-  font-weight: bold;
-  color: #af4c1e;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  box-shadow: 
-    0 12px 48px rgba(40, 20, 5, 0.4),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  backdrop-filter: blur(10px);
-}
-
-@media (max-width: 600px) {
-  .hero-action {
-    display: flex;
-    justify-content: center;
-    width: 300px;
-  }
-}
-
-.hero-action:hover {
-  background: rgba(255, 233, 199, 0.95);
-  color: #8c3915;
-  box-shadow: 
-    0 16px 64px rgba(40, 20, 5, 0.6),
-    inset 0 2px 4px rgba(255, 255, 255, 0.5);
-  transform: translateY(-3px);
-  border-color: rgba(212, 165, 116, 0.8);
-}
-
-.hero-action a {
-  color: #fff;
+  padding: 1rem 3rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
   text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: Georgia, serif;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-shadow: 3px 3px 12px #000, 2px 2px 8px #030100;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  opacity: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero-cta-button.animate-button {
+  animation: buttonFadeIn 1.2s ease-out 0.9s forwards;
+}
+
+.hero-cta-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes buttonFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 600px) {
-  .hero-action a {
-    font-size: 1.2rem;
+  .hero-cta-button {
+    font-size: 0.9rem;
+    padding: 0.8rem 2rem;
   }
-
-  .hero-action a img {
-    width: 16px !important;
-    height: 16px !important;
-  }
-}
-
-.phone-tooltip {
-  position: absolute;
-  bottom: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.95);
-  color: #F4F0D4;
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-family: Georgia, serif;
-  font-size: 1.2rem;
-  font-weight: bold;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-  z-index: 10;
-  border: 1px solid rgba(212, 165, 116, 0.3);
-}
-
-.phone-tooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 8px solid transparent;
-  border-top-color: rgba(0, 0, 0, 0.95);
-}
-
-.hero-action:hover .phone-tooltip {
-  opacity: 1;
-  transform: translateX(-50%) translateY(-8px);
 }
 
 /* Slide Indicators */
@@ -562,14 +502,135 @@ const slideStyle = (index: number) => {
   .slide-indicators {
     bottom: 20px;
   }
-  
+
   .indicator {
     width: 10px;
     height: 10px;
   }
-  
+
   .indicator.active {
     width: 30px;
+  }
+}
+
+/* Garden Logo Styles */
+.garden-container {
+  position: relative;
+}
+
+.garden-text {
+  position: fixed;
+  right: 120px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  z-index: 1001;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  opacity: 1;
+  transition: all 0.4s ease;
+  box-shadow: -3px 0 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.garden-logo {
+  position: fixed;
+  right: -200px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  transition: all 0.5s ease;
+  text-decoration: none;
+  width: 220px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: none;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.garden-logo:hover {
+  right: 0;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  box-shadow: -6px 0 20px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-50%) scale(1.02);
+}
+
+.garden-logo:hover p {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.garden-logo:hover .garden-text {
+  opacity: 0;
+  transform: translateY(-50%) rotate(-90deg) translateX(-15px);
+}
+
+.garden-logo div {
+  text-align: center;
+}
+
+.garden-logo p {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease 0.2s;
+}
+
+.garden-logo img {
+  width: 70px;
+  height: auto;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.garden-logo img:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .garden-text {
+    right: 110px;
+    font-size: 0.65rem;
+    padding: 0.4rem 1rem;
+    letter-spacing: 1.5px;
+  }
+
+  .garden-logo {
+    right: -180px;
+    width: 200px;
+    padding: 0.6rem;
+  }
+
+  .garden-logo p {
+    font-size: 0.75rem;
+    margin-bottom: 0.6rem;
+    letter-spacing: 1px;
+  }
+
+  .garden-logo img {
+    width: 60px;
   }
 }
 </style>
