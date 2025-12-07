@@ -148,10 +148,42 @@ const handleSearch = () => {
     return;
   }
 
-  // Możesz dodać logikę wyszukiwania lub przekierowania
-  const bookingUrl = `https://www.booking.com/...?checkin=${checkinDate.value}&checkout=${checkoutDate.value}&group_adults=${guestCount.value}`;
-  console.log('Searching with:', { checkinDate: checkinDate.value, checkoutDate: checkoutDate.value, guests: guestCount.value });
-  // window.open(bookingUrl, '_blank');
+  const guests = parseInt(guestCount.value);
+
+  // Stwórz format room1 (A dla każdego dorosłego)
+  const room1 = Array(guests).fill('A').join('%2C');
+
+  // Bazowy URL Booking.com dla tego hotelu
+  const baseUrl = 'https://www.booking.com/hotel/pl/gosciniec-pod-malym-krolem.pl.html';
+
+  // Parametry URL
+  const params = new URLSearchParams({
+    aid: '318615',
+    label: 'Polish_Poland_PL_PL_28510505545-Pp48DVUKbUvqbN_uj5E1CwS217288760776:pl:ta:p1:p2:ac:ap:neg:fi55769350487:tidsa-300772407013:lp1011468:li:dec:dm',
+    sid: '94df31e1c787121eb06586fc680b2382',
+    checkin: checkinDate.value,
+    checkout: checkoutDate.value,
+    dest_id: '-534141',
+    dest_type: 'city',
+    dist: '0',
+    group_adults: guests.toString(),
+    group_children: '0',
+    hapos: '1',
+    hpos: '1',
+    no_rooms: '1',
+    req_adults: guests.toString(),
+    req_children: '0',
+    room1: room1,
+    sb_price_type: 'total',
+    sr_order: 'popularity',
+    srepoch: '1765115546',
+    srpvid: '42ce618b191b0fce',
+    type: 'total',
+    ucfs: '1'
+  });
+
+  // Przekieruj do Booking.com
+  window.open(`${baseUrl}?${params.toString()}`, '_blank');
 };
 
 const handleScroll = () => {
