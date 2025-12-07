@@ -149,28 +149,35 @@ const handleRoomClick = (roomName: string) => {
   text-align: center;
 }
 
-/* Przycisk powrotu – dokładnie jak na Twoim screenie */
+/* Przycisk powrotu – identyczny jak w regulaminie */
 .back-button {
   display: inline-flex;
   align-items: center;
   gap: 0.8rem;
-  background: #7c704c;
-  color: white;
-  font-weight: 600;
+  padding: 1rem 3rem;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.1rem;
-  padding: 0.9rem 2rem;
-  border-radius: 50px;
-  border: none;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #2c3e50;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(124, 112, 76, 0.3);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
   cursor: pointer;
-  margin-bottom: 4rem;
-  box-shadow: 0 10px 25px rgba(124, 112, 76, 0.3);
   transition: all 0.3s ease;
+  text-transform: uppercase;
+  margin-bottom: 4rem;
+  box-shadow: 0 4px 20px rgba(124, 112, 76, 0.15);
+  text-decoration: none;
 }
 
 .back-button:hover {
-  background: #665d3a;
-  transform: translateY(-4px);
-  box-shadow: 0 15px 35px rgba(124, 112, 76, 0.4);
+  background: #7c704c;
+  color: #ffffff;
+  border-color: #7c704c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(124, 112, 76, 0.3);
 }
 
 .pokoje-title {
@@ -259,5 +266,54 @@ const handleRoomClick = (roomName: string) => {
   border-radius: 50px;
   font-size: 1rem;
   font-weight: 600;
+}
+
+/* Dodatkowa responsywność dla mobile */
+@media (max-width: 640px) {
+  .pokoje-wrapper {
+    padding: 3rem 1rem 6rem;
+  }
+
+  .back-button {
+    font-size: 0.95rem;
+    padding: 0.8rem 1.5rem;
+  }
+
+  .pokoje-description {
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+  }
+
+  .room-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .room-image {
+    height: 250px;
+  }
+
+  .room-info {
+    padding: 1.5rem;
+  }
+
+  .room-name {
+    font-size: 1.5rem;
+  }
+
+  .feature {
+    font-size: 0.9rem;
+    padding: 0.5rem 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pokoje-title {
+    font-size: 2.2rem;
+  }
+
+  .room-image {
+    height: 220px;
+  }
 }
 </style>

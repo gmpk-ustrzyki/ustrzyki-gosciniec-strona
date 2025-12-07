@@ -2,7 +2,7 @@
   <div class="domek-wrapper">
     <div class="domek-content">
       <NuxtLink to="/">
-        <button class="back-button">← Powrót na stronę główną</button>
+        <button class="back-button">Powrót na stronę główną</button>
       </NuxtLink>
 
       <h1 class="domek-title">Dom łemkowski</h1>
@@ -92,74 +92,85 @@ const images = [
 
 <style scoped>
 .domek-wrapper {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%),
-    url('https://www.dropbox.com/scl/fi/ghymow5b5eu6ilt5zh7ac/udogodnienia_bg.webp?rlkey=8zjg81t5iehlkmocf6wsca94p&st=dpk8ngjh&dl=0&raw=1');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 250, 0.98) 100%);
+  backdrop-filter: blur(20px);
   min-height: 100vh;
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  padding: 2rem;
+  padding: 5rem 1.5rem 8rem;
+  font-family: 'Poppins', system-ui, sans-serif;
 }
 
 .domek-content {
-  max-width: 900px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 3rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  margin-top: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .domek-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 4.2rem;
+  font-weight: 600;
   color: #2c3e50;
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 2rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 0 4rem;
+  letter-spacing: 1px;
+  text-shadow: none;
 }
 
 .domek-section {
-  margin-bottom: 2.5rem;
+  text-align: left;
+  margin-bottom: 3rem;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(124, 112, 76, 0.1);
+  border: 1px solid rgba(124, 112, 76, 0.15);
+  backdrop-filter: blur(10px);
 }
 
 .domek-section h3 {
-  color: #2c3e50;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  border-bottom: 3px solid #7c704c;
-  padding-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #7c704c;
+  margin: 0 0 1.5rem;
+  text-align: center;
+  text-shadow: none;
 }
 
 .domek-section p {
-  color: #34495e;
-  line-height: 1.7;
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #555;
   margin-bottom: 0.8rem;
-  font-size: 1.1rem;
 }
 
 .back-button {
-  background: #7c704c;
-  color: white;
-  border: none;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 3rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #2c3e50;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(124, 112, 76, 0.3);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
   cursor: pointer;
-  margin-bottom: 2rem;
   transition: all 0.3s ease;
+  text-transform: uppercase;
+  margin-bottom: 4rem;
+  box-shadow: 0 4px 20px rgba(124, 112, 76, 0.15);
   text-decoration: none;
-  display: inline-block;
 }
 
 .back-button:hover {
-  background: #5d5436;
+  background: #7c704c;
+  color: #ffffff;
+  border-color: #7c704c;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 30px rgba(124, 112, 76, 0.3);
 }
 
 .feature-list {
@@ -231,5 +242,57 @@ const images = [
   opacity: 1;
   transform: scale(1.05);
   border-color: #7c704c;
+}
+
+/* Responsywność dla mobile */
+@media (max-width: 768px) {
+  .domek-wrapper {
+    padding: 4rem 1rem 6rem;
+  }
+
+  .domek-title {
+    font-size: 3rem;
+  }
+
+  .domek-section {
+    padding: 2rem 1.5rem;
+  }
+
+  .domek-section p {
+    font-size: 1.1rem;
+  }
+
+  .main-image {
+    height: 250px;
+  }
+
+  .feature-list {
+    grid-template-columns: 1fr;
+  }
+
+  .back-button {
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+  }
+
+  .thumbnail {
+    width: 80px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .domek-title {
+    font-size: 2.5rem;
+  }
+
+  .back-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .domek-section p {
+    font-size: 1rem;
+  }
 }
 </style>
